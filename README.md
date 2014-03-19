@@ -1,0 +1,2 @@
+fluentd-plugin-elasticsearch-test
+=================================
