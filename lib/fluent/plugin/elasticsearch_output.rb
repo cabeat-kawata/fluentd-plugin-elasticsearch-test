@@ -2,7 +2,8 @@
 require 'date'
 require 'patron'
 require 'elasticsearch'
-class ElasticsearchOutput
+
+class Fluent::ElasticsearchOutput < Fluent::BufferedOutput
 
   Fluent::Plugin.register_output('elasticsearch', self)
 
@@ -59,9 +60,9 @@ class ElasticsearchOutput
     bulk_message = []
 
     chunk.msgpack_each do |tag, time, record|
-      puts('tag : ' + tag)
-      puts('time : ' + time)
-      puts('record : ' + record)
+      puts('tag : ' , tag)
+      puts('time : ' , time)
+      puts('record : ' , record)
       if @logstash_format
         record.merge!({"@timestamp" => Time.at(time).to_datetime.to_s})
         if @utc_index
