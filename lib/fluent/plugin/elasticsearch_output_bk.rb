@@ -2,8 +2,8 @@
 require 'date'
 require 'patron'
 require 'elasticsearch'
-class ElasticsearchOutput
 
+class Fluent::ElasticsearchOutput < Fluent::BufferedOutput
   Fluent::Plugin.register_output('elasticsearch', self)
 
   config_param :host, :string,  :default => 'localhost'
@@ -94,12 +94,7 @@ class ElasticsearchOutput
     bulk_message.clear
   end
 
-  def get(q)
-
-  end
-
   def send(data)
-
+    client.bulk body: data
   end
-
 end

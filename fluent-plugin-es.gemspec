@@ -2,16 +2,16 @@
 $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |s|
-  s.name          = 'fluent-plugin-es'
+  s.name          = 'fluent-plugin-elasticsearch'
   s.version       = '0.0.1'
-  s.authors       = ['kawata']
+  s.authors       = ['y.kawata']
   s.email         = ['kawata_yusuke@cyberagent.co.jp']
   s.description   = %q{ElasticSearch output plugin for Fluent event collector}
   s.summary       = s.description
   s.homepage      = 'https://github.com/cabeat-kawata/fluentd-plugin-es-test'
   s.license       = 'MIT'
 
-  s.files         = `git ls-files`.split($/)
+  s.files         = `git ls-files | grep -v fluent-plugin-elasticsearch-0.0.1.gem`.split($/)
   s.executables   = s.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ['lib']
