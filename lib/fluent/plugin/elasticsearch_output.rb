@@ -82,49 +82,16 @@ class Fluent::ElasticsearchOutput < Fluent::BufferedOutput
   end
 
   def add_bid_bulk_message(bulk_message,record)
-    bid_data = record["bid"]
 
-    bid_doc = Hash.new
-    bid_doc["time"] = bid_data["time"]
-    bid_doc["sapId"] = bid_data["sapId"]
-    bid_doc["auctionId"] = bid_data["auctionId"]
-    bid_doc["host"] = bid_data["host"]
-    bid_doc["cur"] = bid_data["cur"]
-    bid_doc["price"] = bid_data["price"]
-    bid_doc["sspId"] = bid_data["sspId"]
-    bid_doc["noBidReason"] = bid_data["noBidReason"]
-    bid_doc["responseTime"] = bid_data["responseTime"]
-    bid_doc["bidType"] = bid_data["bidType"]
-    bid_doc["status"] = bid_data["status"]
+    time = record["time"]
+    ssp_id = record["sspId"]
+    auction_id = record["auctionId"]
 
-    bid_doc["imp"] = Hash.new
-    bid_doc["imp"]["w"] = bid_data["imp"]["w"]
-    bid_doc["imp"]["h"] = bid_data["imp"]["h"]
-
-    bid_doc["media"] = Hash.new
-    bid_doc["media"]["type"] = bid_data["media"]["type"]
-    bid_doc["media"]["id"] = bid_data["media"]["id"]
-    bid_doc["media"]["domain"] = bid_data["media"]["domain"]
-
-    bid_doc["device"] = Hash.new
-    bid_doc["device"]["osv"] = bid_data["device"]["osv"]
-    bid_doc["device"]["platform"] = bid_data["device"]["platform"]
-    bid_doc["device"]["ids"] = bid_data["device"]["ids"]
-
-    bid_doc["ad"] = Hash.new
-    bid_doc["ad"]["id"] = bid_data["ad"]["id"]
-    bid_doc["ad"]["cpnId"] = bid_data["ad"]["cpnId"]
-    bid_doc["ad"]["creativeId"] = bid_data["ad"]["creativeId"]
-    bid_doc["ad"]["appId"] = bid_data["ad"]["appId"]
-    bid_doc["ad"]["advId"] = bid_data["ad"]["advId"]
-    bid_doc["ad"]["sfe"] = bid_data["ad"]["sfe"]
-    bid_doc["ad"]["adgId"] = bid_data["ad"]["adgId"]
-
-    doc_id = create_doc_id(bid_doc["sapId"],bid_doc["auctionId"])
     target_index = "#{@logstash_prefix}-#{Time.at(time).strftime("#{@logstash_dateformat}")}"
 
+    doc_id = create_doc_id(ssp_id,auction_id)
     meta = { "create" => {"_index" => target_index, "_type" => @type_name, "_id" => doc_id} }
-    action = { "script" => "ctx._source.bid = bid", "params" => {"bid" => bid_doc}}
+    action = { "script" => "ctx._source.bid = bid", "params" => {"bid" => record}}
 
     bulk_message << meta
     bulk_message << action
