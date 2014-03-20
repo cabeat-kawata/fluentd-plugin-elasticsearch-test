@@ -10,6 +10,7 @@ class Fluent::ElasticsearchOutput < Fluent::BufferedOutput
 
   config_param :host, :string,  :default => "localhost"
   config_param :port, :integer, :default => 9200
+  config_param :log_time_dateformat, string, :default => "%Y/%m/%d %H%M%S"
   config_param :logstash_prefix, :string, :default => "logstash"
   config_param :logstash_dateformat, :string, :default => "%Y.%m.%d"
   config_param :type_name, :string, :default => "tenma-deliver"
@@ -87,7 +88,7 @@ class Fluent::ElasticsearchOutput < Fluent::BufferedOutput
     ssp_id = record["sspId"]
     auction_id = record["auctionId"]
 
-    target_index = "#{@logstash_prefix}-#{Time.at(time).strftime("#{@logstash_dateformat}")}"
+    target_index = "#{@logstash_prefix}-#{Date.strptime(time,@log_time_dateformat).strftime("#{@logstash_dateformat}")}"
 
     doc_id = create_doc_id(ssp_id,auction_id)
     meta = { "create" => {"_index" => target_index, "_type" => @type_name, "_id" => doc_id} }
